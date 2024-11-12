@@ -44,17 +44,17 @@ export function initApp() {
     }
 
     try {
-      const history = await provider.getLogs({
-        address,
-        fromBlock: "0x0",
-        toBlock: "latest",
-      });
+      const history = await provider.getHistory(address);
       transactionsDisplay.innerHTML = "<h3>Últimas Transações:</h3>";
-      history.slice(0, 5).forEach((log: { address: string; data: string }) => {
-        const txElement = document.createElement("p");
-        txElement.textContent = `Endereço: ${log.address} - Dados: ${log.data}`;
-        transactionsDisplay.appendChild(txElement);
-      });
+      history
+        .slice(0, 5)
+        .forEach((tx: { from: any; to: any; value: ethers.BigNumberish }) => {
+          const txElement = document.createElement("p");
+          txElement.textContent = `De: ${tx.from} Para: ${
+            tx.to
+          } - Valor: ${ethers.formatEther(tx.value)} ETH`;
+          transactionsDisplay.appendChild(txElement);
+        });
     } catch (error) {
       transactionsDisplay.textContent = "Erro ao buscar as transações.";
       console.error(error);
